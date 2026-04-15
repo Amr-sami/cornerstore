@@ -11,7 +11,7 @@ interface SalesTableProps {
 export function SalesTable({ sales, onReturn }: SalesTableProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-border overflow-x-auto">
-      <table className="w-full min-w-[900px]">
+      <table className="w-full min-w-[800px]">
         <thead>
           <tr className="text-sm text-text-secondary border-b border-border bg-gray-50">
             <th className="text-start pb-3 px-4 py-3">التاريخ</th>

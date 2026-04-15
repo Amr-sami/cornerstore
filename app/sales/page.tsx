@@ -9,6 +9,7 @@ import { SaleForm } from "@/components/sales/SaleForm";
 import { SaleSummaryCard } from "@/components/sales/SaleSummaryCard";
 import { SalesFilters } from "@/components/sales/SalesFilters";
 import { SalesTable } from "@/components/sales/SalesTable";
+import { SaleCard } from "@/components/sales/SaleCard";
 import { ReturnModal } from "@/components/returns/ReturnModal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -55,30 +56,37 @@ export default function SalesPage() {
 
   return (
     <AppShell title="المبيعات">
-      <div className="space-y-6">
+      <div className="space-y-4">
         <SaleSummaryCard />
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
-            <SalesFilters
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              selectedStatus={selectedStatus}
-              onStatusChange={setSelectedStatus}
-            />
+        {/* Sale Form */}
+        <SaleForm
+          onSuccess={() => setToast({ type: "success", message: "تم تسجيل البيع بنجاح" })}
+        />
 
-            {filteredSales.length === 0 ? (
-              <EmptyState type="sales" />
-            ) : (
-              <SalesTable sales={filteredSales} onReturn={handleReturn} />
-            )}
-          </div>
+        {/* Filters */}
+        <SalesFilters
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          selectedStatus={selectedStatus}
+          onStatusChange={setSelectedStatus}
+        />
 
-          <div className="lg:sticky lg:top-4 h-fit">
-            <SaleForm
-              onSuccess={() => setToast({ type: "success", message: "تم تسجيل البيع بنجاح" })}
-            />
-          </div>
+        {/* Empty State */}
+        {filteredSales.length === 0 && (
+          <EmptyState type="sales" />
+        )}
+
+        {/* Desktop Table */}
+        <div className="hidden md:block">
+          <SalesTable sales={filteredSales} onReturn={handleReturn} />
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+          {filteredSales.map((sale) => (
+            <SaleCard key={sale.id} sale={sale} onReturn={handleReturn} />
+          ))}
         </div>
       </div>
 
