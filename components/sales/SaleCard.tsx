@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, Printer, Calendar, Package, Tag } from "lucide-react";
+import { RotateCcw, Printer, Calendar, Tag } from "lucide-react";
 import type { Sale } from "@/lib/types";
 import { Badge } from "../ui/Badge";
 import { CATEGORY_LABELS, GENDER_LABELS } from "@/lib/types";
@@ -9,23 +9,34 @@ import { formatPrice, formatDate, cn } from "@/lib/utils";
 interface SaleCardProps {
   sale: Sale;
   onReturn: (sale: Sale) => void;
+  onPrint: (sale: Sale) => void;
 }
 
-export function SaleCard({ sale, onReturn }: SaleCardProps) {
+export function SaleCard({ sale, onReturn, onPrint }: SaleCardProps) {
+  const saleDate = new Date(sale.saleDate);
+
   return (
     <div
       className={cn(
-        "bg-white rounded-xl p-4 shadow-sm border border-border transition-all",
+        "bg-white rounded-xl p-4 shadow-sm border border-border transition-all font-cairo",
         sale.isReturned && "opacity-75 bg-gray-50/50"
       )}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-            <Calendar className="w-3.5 h-3.5" />
-            {formatDate(new Date(sale.saleDate))}
+          <div className="flex flex-col gap-0.5 text-xs text-text-secondary">
+            <div className="flex items-center gap-1.5 font-bold text-text-primary">
+              <Calendar className="w-3.5 h-3.5 text-accent" />
+              {formatDate(saleDate)}
+            </div>
+            <span className="mr-5 opacity-70">
+              {saleDate.toLocaleTimeString("ar-EG", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
           </div>
-          <h3 className="font-bold text-lg leading-tight">{sale.productName}</h3>
+          <h3 className="font-bold text-lg leading-tight mt-1">{sale.productName}</h3>
           {sale.brand && (
             <p className="text-sm text-text-secondary flex items-center gap-1">
               <Tag className="w-3.5 h-3.5 text-accent" />
@@ -46,50 +57,55 @@ export function SaleCard({ sale, onReturn }: SaleCardProps) {
       <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
         <div>
           <p className="text-[10px] uppercase tracking-wider text-text-secondary mb-0.5">الكمية المباعة</p>
-          <p className="text-lg font-bold leading-none">{sale.quantitySold} قطعة</p>
+          <p className="text-lg font-black leading-none">{sale.quantitySold} قطعة</p>
         </div>
         <div className="text-end">
           <p className="text-[10px] uppercase tracking-wider text-text-secondary mb-0.5">سعر الوحدة</p>
-          <p className="text-lg font-bold leading-none">{formatPrice(sale.pricePerUnit)}</p>
+          <p className="text-lg font-black leading-none">{formatPrice(sale.pricePerUnit)}</p>
         </div>
       </div>
 
       {/* Discount Info */}
       {sale.discountAmount && sale.discountAmount > 0 && (
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-xs text-danger font-medium">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <span className="text-xs text-danger font-bold">
             خصم {sale.discountType === "percentage" ? `${sale.discountValue}%` : formatPrice(sale.discountAmount)}
           </span>
-          <span className="text-xs text-text-secondary line-through">
+          <span className="text-xs text-text-secondary line-through opacity-60 italic">
             {formatPrice(sale.subtotal)}
           </span>
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
         <div>
-          <p className="text-xs text-text-secondary mb-0.5">الإجمالي</p>
+          <p className="text-xs text-text-secondary mb-0.5 font-medium">الإجمالي</p>
           <p className="text-2xl font-black text-accent">{formatPrice(sale.totalPrice)}</p>
         </div>
         
         <div className="flex flex-col gap-2">
-          <button
-            onClick={() => onPrint(sale)}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent-light text-accent rounded-xl hover:bg-accent hover:text-white transition-all font-semibold shadow-sm"
-          >
-            <Printer className="w-4 h-4" />
-            طباعة
-          </button>
           {!sale.isReturned && (
             <button
-              onClick={() => onReturn(sale)}
-              disabled={sale.isReturned}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-danger-light text-danger rounded-xl hover:bg-danger hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold shadow-sm"
+              onClick={() => onPrint(sale)}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-accent text-white rounded-xl hover:bg-accent/90 transition-all font-bold shadow-lg shadow-accent/20 border border-accent/20"
             >
-              <RotateCcw className="w-4 h-4" />
-              مرتجع
+              <Printer className="w-4 h-4" />
+              طباعة
             </button>
           )}
+          <button
+            onClick={() => onReturn(sale)}
+            disabled={sale.isReturned}
+            className={cn(
+              "flex items-center justify-center gap-2 px-5 py-2 rounded-xl transition-all font-bold text-sm",
+              sale.isReturned 
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                : "bg-danger-light text-danger hover:bg-danger hover:text-white border border-danger/10"
+            )}
+          >
+            <RotateCcw className="w-4 h-4" />
+            مرتجع
+          </button>
         </div>
       </div>
     </div>
