@@ -23,3 +23,41 @@ export function formatDateTime(date: Date): string {
 export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(" ");
 }
+
+export function startOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+export function endOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
+export function isBetween(date: Date, start: Date, end: Date): boolean {
+  const time = date.getTime();
+  return time >= start.getTime() && time <= end.getTime();
+}
+
+export function getTodayRange() {
+  const start = startOfDay(new Date());
+  const end = endOfDay(new Date());
+  return { start, end };
+}
+
+export function getYesterdayRange() {
+  const start = startOfDay(new Date());
+  start.setDate(start.getDate() - 1);
+  const end = endOfDay(new Date(start));
+  return { start, end };
+}
+
+export function getThisMonthRange() {
+  const start = new Date();
+  start.setDate(1);
+  startOfDay(start);
+  const end = endOfDay(new Date());
+  return { start, end };
+}

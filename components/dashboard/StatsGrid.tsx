@@ -49,18 +49,21 @@ export function StatsGrid() {
         value={formatPrice(todaySales)}
         icon={DollarSign}
         color="success"
+        href="/reports?range=today"
       />
       <StatCard
         title="عدد الأصناف"
         value={products.length}
         icon={Package}
         color="accent"
+        href="/inventory"
       />
       <StatCard
         title="مبيعات الشهر"
         value={formatPrice(monthSales)}
         icon={ShoppingCart}
         color="accent"
+        href="/reports?range=this-month"
       />
       <StatCard
         title="مرتجعات الشهر"
@@ -68,6 +71,7 @@ export function StatsGrid() {
         subtitle="مرتجع"
         icon={RotateCcw}
         color="danger"
+        href="/reports?range=returns-this-month"
       />
     </div>
   );
