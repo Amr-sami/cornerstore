@@ -7,6 +7,7 @@ import { DateRangePicker } from "@/components/reports/DateRangePicker";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { SalesTable } from "@/components/sales/SalesTable";
 import { SaleCard } from "@/components/sales/SaleCard";
+import { Receipt } from "@/components/sales/Receipt";
 import { useSales } from "@/hooks/useSales";
 import { useReturns } from "@/hooks/useReturns";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -24,6 +25,8 @@ export default function ReportsPage() {
     start: "",
     end: ""
   });
+
+  const [printSale, setPrintSale] = useState<Sale | null>(null);
 
   useEffect(() => {
     const range = searchParams.get("range");
@@ -63,6 +66,13 @@ export default function ReportsPage() {
 
     return { totalSales, totalReturns, totalQty };
   }, [filteredData]);
+
+  const handlePrint = (sale: Sale) => {
+    setPrintSale(sale);
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  };
 
   if (salesLoading || returnsLoading) {
     return (
@@ -114,19 +124,48 @@ export default function ReportsPage() {
             <>
               {/* Desktop Table */}
               <div className="hidden md:block">
-                <SalesTable sales={filteredData.sales} onReturn={() => {}} />
+                <SalesTable 
+                  sales={filteredData.sales} 
+                  onReturn={() => {}} 
+                  onPrint={handlePrint}
+                />
               </div>
 
               {/* Mobile Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
                 {filteredData.sales.map((sale) => (
-                  <SaleCard key={sale.id} sale={sale} onReturn={() => {}} />
+                  <SaleCard 
+                    key={sale.id} 
+                    sale={sale} 
+                    onReturn={() => {}} 
+                    onPrint={handlePrint}
+                  />
                 ))}
               </div>
             </>
           )}
         </div>
       </div>
+
+      {/* Hidden Receipt for Printing */}
+      {printSale && (
+        <div className="print-receipt-container">
+          <Receipt 
+            sale={{
+              productName: printSale.productName,
+              brand: printSale.brand,
+              quantity: printSale.quantitySold,
+              pricePerUnit: printSale.pricePerUnit,
+              subtotal: printSale.subtotal,
+              discountType: printSale.discountType,
+              discountValue: printSale.discountValue,
+              discountAmount: printSale.discountAmount || 0,
+              totalPrice: printSale.totalPrice,
+              saleDate: printSale.saleDate,
+            }} 
+          />
+        </div>
+      )}
     </AppShell>
   );
 }
