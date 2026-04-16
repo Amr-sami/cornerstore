@@ -48,7 +48,7 @@ export function TrendChart({ data }: TrendChartProps) {
               boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
               fontFamily: "var(--font-cairo)"
             }}
-            formatter={(value: number) => [formatPrice(value), "المبيعات"]}
+            formatter={(value: any) => [formatPrice(Number(value || 0)), "المبيعات"]}
           />
           <Area
             type="monotone"
