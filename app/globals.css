@@ -99,19 +99,24 @@ textarea {
 
 /* ─── Print Styles ─── */
 @media print {
-  /* Hide everything */
-  body > * {
-    display: none !important;
+  /* Use visibility to hide everything but the receipt */
+  body * {
+    visibility: hidden;
   }
 
-  /* Show only the receipt */
+  /* Show only the receipt and its content */
+  .print-receipt-container,
+  .print-receipt-container * {
+    visibility: visible;
+  }
+
   .print-receipt-container {
-    display: block !important;
-    position: fixed;
-    top: 0;
+    position: absolute;
     left: 0;
-    right: 0;
-    z-index: 99999;
+    top: 0;
+    width: 72mm;
+    margin: 0;
+    padding: 0;
   }
 
   @page {
@@ -129,6 +134,7 @@ textarea {
     color: #000;
     background: #fff;
     direction: rtl;
+    visibility: visible !important;
   }
 
   .receipt-header {
