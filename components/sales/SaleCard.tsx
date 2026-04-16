@@ -72,15 +72,25 @@ export function SaleCard({ sale, onReturn }: SaleCardProps) {
           <p className="text-2xl font-black text-accent">{formatPrice(sale.totalPrice)}</p>
         </div>
         
-        {!sale.isReturned && (
+        <div className="flex flex-col gap-2">
           <button
-            onClick={() => onReturn(sale)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-danger-light text-danger rounded-xl hover:bg-red-200 transition-colors font-semibold shadow-sm"
+            onClick={() => onPrint(sale)}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent-light text-accent rounded-xl hover:bg-accent hover:text-white transition-all font-semibold shadow-sm"
           >
-            <RotateCcw className="w-4 h-4" />
-            مرتجع
+            <Printer className="w-4 h-4" />
+            طباعة
           </button>
-        )}
+          {!sale.isReturned && (
+            <button
+              onClick={() => onReturn(sale)}
+              disabled={sale.isReturned}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-danger-light text-danger rounded-xl hover:bg-danger hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold shadow-sm"
+            >
+              <RotateCcw className="w-4 h-4" />
+              مرتجع
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -6,9 +6,10 @@ import { SalesTableRow } from "./SalesTableRow";
 interface SalesTableProps {
   sales: Sale[];
   onReturn: (sale: Sale) => void;
+  onPrint: (sale: Sale) => void;
 }
 
-export function SalesTable({ sales, onReturn }: SalesTableProps) {
+export function SalesTable({ sales, onReturn, onPrint }: SalesTableProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-border overflow-x-auto">
       <table className="w-full min-w-[800px]">
@@ -27,7 +28,7 @@ export function SalesTable({ sales, onReturn }: SalesTableProps) {
         </thead>
         <tbody>
           {sales.map((sale) => (
-            <SalesTableRow key={sale.id} sale={sale} onReturn={onReturn} />
+            <SalesTableRow key={sale.id} sale={sale} onReturn={onReturn} onPrint={onPrint} />
           ))}
         </tbody>
       </table>

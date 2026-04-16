@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Printer } from "lucide-react";
 import type { Sale } from "@/lib/types";
 import { Badge } from "../ui/Badge";
 import { CATEGORY_LABELS, GENDER_LABELS } from "@/lib/types";
@@ -9,9 +9,10 @@ import { formatPrice, formatDate } from "@/lib/utils";
 interface SalesTableRowProps {
   sale: Sale;
   onReturn: (sale: Sale) => void;
+  onPrint: (sale: Sale) => void;
 }
 
-export function SalesTableRow({ sale, onReturn }: SalesTableRowProps) {
+export function SalesTableRow({ sale, onReturn, onPrint }: SalesTableRowProps) {
   return (
     <tr className="border-b border-border last:border-0">
       <td className="py-3 px-2 text-sm">
