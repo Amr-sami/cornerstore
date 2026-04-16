@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, PlusSquare, RotateCcw } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, PlusSquare, RotateCcw, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/sales", label: "المبيعات", icon: ShoppingCart },
   { href: "/add-product", label: "إضافة صنف", icon: PlusSquare },
   { href: "/returns", label: "المرتجعات", icon: RotateCcw },
+  { href: "/insights", label: "إحصائيات", icon: BarChart3 },
 ];
 
 export function Sidebar() {
