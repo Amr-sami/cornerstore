@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { DateRangePicker } from "@/components/reports/DateRangePicker";
@@ -16,7 +16,7 @@ import { formatPrice, startOfDay, endOfDay, isBetween, getTodayRange, getThisMon
 import { DollarSign, ShoppingCart, RotateCcw } from "lucide-react";
 import type { Sale } from "@/lib/types";
 
-export default function ReportsPage() {
+function ReportsContent() {
   const searchParams = useSearchParams();
   const { sales, loading: salesLoading } = useSales();
   const { returns, loading: returnsLoading } = useReturns();
@@ -76,16 +76,14 @@ export default function ReportsPage() {
 
   if (salesLoading || returnsLoading) {
     return (
-      <AppShell title="التقارير">
-        <div className="flex items-center justify-center py-20">
-          <LoadingSpinner />
-        </div>
-      </AppShell>
+      <div className="flex items-center justify-center py-20">
+        <LoadingSpinner />
+      </div>
     );
   }
 
   return (
-    <AppShell title="التقارير والاحصائيات">
+    <>
       <div className="space-y-6">
         <DateRangePicker
           startDate={dateRange.start}
@@ -166,6 +164,16 @@ export default function ReportsPage() {
           />
         </div>
       )}
+    </>
+  );
+}
+
+export default function ReportsPage() {
+  return (
+    <AppShell title="التقارير والاحصائيات">
+      <Suspense fallback={<div className="flex items-center justify-center py-20"><LoadingSpinner /></div>}>
+        <ReportsContent />
+      </Suspense>
     </AppShell>
   );
 }
