@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, Calendar, Package, Tag } from "lucide-react";
+import { RotateCcw, Printer, Calendar, Package, Tag } from "lucide-react";
 import type { Sale } from "@/lib/types";
 import { Badge } from "../ui/Badge";
 import { CATEGORY_LABELS, GENDER_LABELS } from "@/lib/types";
