@@ -54,6 +54,18 @@ export function SaleCard({ sale, onReturn }: SaleCardProps) {
         </div>
       </div>
 
+      {/* Discount Info */}
+      {sale.discountAmount && sale.discountAmount > 0 && (
+        <div className="flex items-center justify-between mb-2 px-1">
+          <span className="text-xs text-danger font-medium">
+            خصم {sale.discountType === "percentage" ? `${sale.discountValue}%` : formatPrice(sale.discountAmount)}
+          </span>
+          <span className="text-xs text-text-secondary line-through">
+            {formatPrice(sale.subtotal)}
+          </span>
+        </div>
+      )}
+
       <div className="flex items-center justify-between pt-2">
         <div>
           <p className="text-xs text-text-secondary mb-0.5">الإجمالي</p>

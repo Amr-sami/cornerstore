@@ -28,6 +28,8 @@ export interface Product {
   updatedAt: Date;
 }
 
+export type DiscountType = "percentage" | "fixed";
+
 export interface Sale {
   id: string;
   productId: string;
@@ -37,6 +39,10 @@ export interface Sale {
   brand?: string;
   quantitySold: number;
   pricePerUnit: number;
+  subtotal: number;
+  discountType?: DiscountType;
+  discountValue?: number;
+  discountAmount?: number;
   totalPrice: number;
   saleDate: Date;
   isReturned: boolean;

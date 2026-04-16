@@ -91,3 +91,124 @@ textarea {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
+
+/* ─── Receipt Styles (hidden on screen) ─── */
+.print-receipt-container {
+  display: none;
+}
+
+/* ─── Print Styles ─── */
+@media print {
+  /* Hide everything */
+  body > * {
+    display: none !important;
+  }
+
+  /* Show only the receipt */
+  .print-receipt-container {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+  }
+
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  .receipt {
+    width: 72mm;
+    margin: 0 auto;
+    padding: 4mm 2mm;
+    font-family: var(--font-cairo), 'Arial', sans-serif;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+    direction: rtl;
+  }
+
+  .receipt-header {
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .receipt-store-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 2px 0;
+    letter-spacing: 2px;
+  }
+
+  .receipt-subtitle {
+    font-size: 10px;
+    color: #333;
+    margin: 0;
+  }
+
+  .receipt-divider-double {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: -0.5px;
+    color: #000;
+    margin: 3px 0;
+  }
+
+  .receipt-divider {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: -0.5px;
+    color: #555;
+    margin: 4px 0;
+  }
+
+  .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 0;
+    font-size: 11px;
+  }
+
+  .receipt-section {
+    margin: 2px 0;
+  }
+
+  .receipt-discount {
+    color: #666;
+  }
+
+  .receipt-total {
+    margin: 4px 0;
+  }
+
+  .receipt-total-row {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .receipt-footer {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 10px;
+    color: #333;
+  }
+
+  .receipt-footer p {
+    margin: 2px 0;
+  }
+
+  .receipt-spacer {
+    height: 4px;
+  }
+
+  .receipt-thankyou {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+    margin-top: 6px !important;
+  }
+}

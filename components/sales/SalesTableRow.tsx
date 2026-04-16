@@ -31,7 +31,19 @@ export function SalesTableRow({ sale, onReturn }: SalesTableRowProps) {
       <td className="py-3 px-2 text-sm">{sale.brand || "-"}</td>
       <td className="py-3 px-2">{sale.quantitySold}</td>
       <td className="py-3 px-2 text-sm">{formatPrice(sale.pricePerUnit)}</td>
-      <td className="py-3 px-2 font-medium">{formatPrice(sale.totalPrice)}</td>
+      <td className="py-3 px-2">
+        <div>
+          <p className="font-medium">{formatPrice(sale.totalPrice)}</p>
+          {sale.discountAmount && sale.discountAmount > 0 && (
+            <>
+              <p className="text-xs text-text-secondary line-through">{formatPrice(sale.subtotal)}</p>
+              <p className="text-xs text-danger">
+                خصم {sale.discountType === "percentage" ? `${sale.discountValue}%` : formatPrice(sale.discountAmount)}
+              </p>
+            </>
+          )}
+        </div>
+      </td>
       <td className="py-3 px-2">
         {sale.isReturned ? (
           <Badge variant="returned">مرتجع</Badge>

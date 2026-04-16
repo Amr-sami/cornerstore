@@ -15,7 +15,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import type { Product, Sale, Return, Category, Gender } from "./types";
+import type { Product, Sale, Return, Category, Gender, DiscountType } from "./types";
 
 function convertTimestamp(ts: Timestamp | null | undefined): Date {
   if (!ts) return new Date();
@@ -89,7 +89,9 @@ export async function recordSale(
   productId: string,
   quantitySold: number,
   pricePerUnit: number,
-  note?: string
+  note?: string,
+  discountType?: DiscountType,
+  discountValue?: number
 ): Promise<string> {
   const productRef = doc(db, "products", productId);
   const saleRef = doc(collection(db, "sales"));
@@ -106,6 +108,18 @@ export async function recordSale(
     }
 
     const productData = productSnap.data();
+    const subtotal = quantitySold * pricePerUnit;
+
+    let discountAmount = 0;
+    if (discountType && discountValue && discountValue > 0) {
+      if (discountType === "percentage") {
+        discountAmount = Math.round((subtotal * discountValue) / 100);
+      } else {
+        discountAmount = discountValue;
+      }
+    }
+    discountAmount = Math.min(discountAmount, subtotal);
+    const totalPrice = subtotal - discountAmount;
 
     transaction.update(productRef, {
       quantity: currentQty - quantitySold,
@@ -120,7 +134,11 @@ export async function recordSale(
       brand: productData.brand || null,
       quantitySold,
       pricePerUnit,
-      totalPrice: quantitySold * pricePerUnit,
+      subtotal,
+      discountType: discountType || null,
+      discountValue: discountValue || null,
+      discountAmount: discountAmount || null,
+      totalPrice,
       saleDate: serverTimestamp(),
       isReturned: false,
       returnedAt: null,
@@ -148,6 +166,10 @@ export function subscribeToSales(callback: (sales: Sale[]) => void): () => void 
         brand: data.brand,
         quantitySold: data.quantitySold,
         pricePerUnit: data.pricePerUnit,
+        subtotal: data.subtotal || data.totalPrice,
+        discountType: data.discountType as DiscountType | undefined,
+        discountValue: data.discountValue,
+        discountAmount: data.discountAmount,
         totalPrice: data.totalPrice,
         saleDate: convertTimestamp(data.saleDate as Timestamp),
         isReturned: data.isReturned || false,
