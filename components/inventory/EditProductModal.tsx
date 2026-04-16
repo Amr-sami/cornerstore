@@ -21,27 +21,36 @@ export function EditProductModal({
   onSuccess,
 }: EditProductModalProps) {
   const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(product?.quantity ?? 0);
-  const [price, setPrice] = useState(product?.price ?? 0);
-  const [costPrice, setCostPrice] = useState(product?.costPrice ?? 0);
-  const [lowStockThreshold, setLowStockThreshold] = useState(
-    product?.lowStockThreshold ?? 3
-  );
+  const [quantity, setQuantity] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [costPrice, setCostPrice] = useState(0);
+  const [lowStockThreshold, setLowStockThreshold] = useState(3);
+
+  // Update state when product prop changes or modal opens
+  useEffect(() => {
+    if (product && isOpen) {
+      setQuantity(product.quantity);
+      setPrice(product.price);
+      setCostPrice(product.costPrice || 0);
+      setLowStockThreshold(product.lowStockThreshold || 3);
+    }
+  }, [product, isOpen]);
 
   const handleSave = async () => {
     if (!product) return;
     setLoading(true);
     try {
       await updateProduct(product.id, {
-        quantity,
-        price,
-        costPrice: costPrice || undefined,
-        lowStockThreshold,
+        quantity: Number(quantity),
+        price: Number(price),
+        costPrice: Number(costPrice),
+        lowStockThreshold: Number(lowStockThreshold),
       });
       onSuccess();
       onClose();
     } catch (error) {
       console.error(error);
+      alert("حدث خطأ أثناء التحديث");
     } finally {
       setLoading(false);
     }
