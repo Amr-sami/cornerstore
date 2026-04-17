@@ -28,7 +28,7 @@ export function ExpenseForm({ onSuccess }: ExpenseFormProps) {
         title,
         amount: Number(amount),
         category,
-        note: note || undefined,
+        note: note || null,
       });
       setTitle("");
       setAmount("");
