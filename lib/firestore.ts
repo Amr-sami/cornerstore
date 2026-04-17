@@ -15,7 +15,45 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import type { Product, Sale, Return, Category, Gender, DiscountType } from "./types";
+import type { Product, Sale, Return, Category, Gender, DiscountType, Expense, ExpenseCategory } from "./types";
+
+export async function addExpense(
+  data: Omit<Expense, "id" | "date">
+): Promise<string> {
+  const expensesRef = collection(db, "expenses");
+  const docRef = await addDoc(expensesRef, {
+    ...data,
+    date: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function deleteExpense(expenseId: string): Promise<void> {
+  const expenseRef = doc(db, "expenses", expenseId);
+  await deleteDoc(expenseRef);
+}
+
+export function subscribeToExpenses(callback: (expenses: Expense[]) => void): () => void {
+  const expensesRef = collection(db, "expenses");
+  const q = query(expensesRef, orderBy("date", "desc"));
+  
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const expenses: Expense[] = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title,
+        amount: data.amount,
+        category: data.category as ExpenseCategory,
+        date: convertTimestamp(data.date as Timestamp),
+        note: data.note,
+      };
+    });
+    callback(expenses);
+  });
+  
+  return unsubscribe;
+}
 
 function convertTimestamp(ts: Timestamp | null | undefined): Date {
   if (!ts) return new Date();

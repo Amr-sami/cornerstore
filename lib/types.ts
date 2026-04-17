@@ -73,3 +73,23 @@ export interface ProductFormData {
   costPrice: number;
   lowStockThreshold: number;
 }
+
+export type ExpenseCategory = "rent" | "salaries" | "electricity" | "water" | "internet" | "other";
+
+export const EXPENSE_CATEGORY_LABELS: Record<ExpenseCategory, string> = {
+  rent: "إيجار",
+  salaries: "مرتبات",
+  electricity: "كهرباء",
+  water: "مياه",
+  internet: "إنترنت",
+  other: "أخرى",
+};
+
+export interface Expense {
+  id: string;
+  title: string;
+  amount: number;
+  category: ExpenseCategory;
+  date: Date;
+  note?: string;
+}

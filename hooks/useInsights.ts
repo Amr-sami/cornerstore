@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useSales } from "./useSales";
 import { useReturns } from "./useReturns";
 import { useProducts } from "./useProducts";
+import { useExpenses } from "./useExpenses";
 import { startOfDay, endOfDay, getThisMonthRange, isBetween } from "@/lib/utils";
 import { startOfMonth, subMonths, format, eachDayOfInterval, isSameDay } from "date-fns";
 import type { Sale, Return, Product } from "@/lib/types";
@@ -12,14 +13,21 @@ export function useInsights() {
   const { sales, loading: salesLoading } = useSales();
   const { returns, loading: returnsLoading } = useReturns();
   const { products, loading: productsLoading } = useProducts();
+  const { expenses, loading: expensesLoading } = useExpenses();
 
   const data = useMemo(() => {
-    if (salesLoading || returnsLoading || productsLoading) return null;
+    if (salesLoading || returnsLoading || productsLoading || expensesLoading) return null;
 
     const now = new Date();
     const currentMonthStart = startOfMonth(now);
     const lastMonthStart = startOfMonth(subMonths(now, 1));
     const lastMonthEnd = endOfDay(new Date(currentMonthStart.getTime() - 1));
+
+    // 0. Product Cost Map for Profit Calculation
+    const productCostMap: Record<string, number> = {};
+    products.forEach(p => {
+      productCostMap[p.id] = p.costPrice || 0;
+    });
 
     // 1. Current Month vs Last Month
     const currentMonthSales = sales.filter(s => new Date(s.saleDate) >= currentMonthStart);
@@ -69,8 +77,17 @@ export function useInsights() {
     
     const categoryChartData = Object.entries(categoryData).map(([name, value]) => ({ name, value }));
 
-    // 5. Discount Impact
+    // 5. Financials (Total)
+    const totalRevenue = sales.reduce((sum, s) => sum + s.totalPrice, 0);
+    const totalCostOfGoods = sales.reduce((sum, s) => {
+      const costPerUnit = productCostMap[s.productId] || 0;
+      return sum + (costPerUnit * s.quantitySold);
+    }, 0);
+    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
     const totalDiscounts = sales.reduce((sum, s) => sum + (s.discountAmount || 0), 0);
+    const grossProfit = totalRevenue - totalCostOfGoods;
+    const netProfit = grossProfit - totalExpenses;
+
     const potentialRevenue = sales.reduce((sum, s) => sum + (s.subtotal || s.totalPrice), 0);
     const discountPercent = potentialRevenue === 0 ? 0 : (totalDiscounts / potentialRevenue) * 100;
 
@@ -79,6 +96,11 @@ export function useInsights() {
         currentRevenue,
         lastRevenue,
         revenueGrowth,
+        totalRevenue,
+        totalCostOfGoods,
+        totalExpenses,
+        grossProfit,
+        netProfit,
         totalDiscounts,
         discountPercent,
         totalSales: sales.length,
@@ -88,7 +110,7 @@ export function useInsights() {
       topProducts,
       categoryChartData
     };
-  }, [sales, returns, products, salesLoading, returnsLoading, productsLoading]);
+  }, [sales, returns, products, expenses, salesLoading, returnsLoading, productsLoading, expensesLoading]);
 
-  return { data, loading: salesLoading || returnsLoading || productsLoading };
+  return { data, loading: salesLoading || returnsLoading || productsLoading || expensesLoading };
 }

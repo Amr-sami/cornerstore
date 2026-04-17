@@ -72,11 +72,19 @@ export default function InsightsPage() {
           />
 
           <StatCard
-            title="إجمالي المرتجعات"
-            value={metrics.totalReturns}
-            subtitle="حالة مرتجع"
-            icon={RotateCcw}
+            title="إجمالي المصاريف"
+            value={formatPrice(metrics.totalExpenses)}
+            subtitle="تكاليف تشغيلية"
+            icon={DollarSign}
             color="danger"
+          />
+
+          <StatCard
+            title="صافي الربح"
+            value={formatPrice(metrics.netProfit)}
+            subtitle="بعد خصم المصاريف والتكلفة"
+            icon={TrendingUp}
+            color={metrics.netProfit >= 0 ? "success" : "danger"}
           />
         </div>
 
@@ -100,11 +108,12 @@ export default function InsightsPage() {
             </div>
             <div>
               <h3 className="text-lg font-bold">بصيرة الذكاء الاصطناعي</h3>
-              <p className="text-sm text-text-secondary mt-2 max-w-sm">
+              <p className="text-sm text-text-secondary mt-2 max-w-sm leading-relaxed">
                 المبيعات هذا الشهر {isPositive ? 'مرتفعة' : 'منخفضة'} بنسبة {Math.abs(metrics.revenueGrowth).toFixed(1)}%. 
-                {metrics.discountPercent > 10 
-                  ? ' نسبة الخصومات مرتفعة قليلاً، قد يؤثر ذلك على هوامش الربح.' 
-                  : ' سياسة الخصومات الحالية متوازنة وتدعم نمو المبيعات.'}
+                {metrics.netProfit > 0 
+                  ? ` صافي الربح الحالي هو ${formatPrice(metrics.netProfit)} بعد تغطية كافة المصاريف.`
+                  : " صافي الربح بالسالب حالياً، يرجى مراجعة المصاريف أو تحسين وتيرة البيع."}
+                {metrics.discountPercent > 10 && " نسبة الخصومات قد تؤثر على هوامش الربح على المدى الطويل."}
               </p>
             </div>
           </div>
