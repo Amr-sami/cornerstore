@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type BadgeVariant = "watches" | "perfumes" | "sunglasses" | "male" | "female" | "sold" | "returned" | "lowstock" | "outofstock";
+type BadgeVariant = "watches" | "perfumes" | "sunglasses" | "male" | "female" | "sold" | "returned" | "lowstock" | "outofstock" | "other";
 
 interface BadgeProps {
   variant: BadgeVariant;
@@ -18,6 +18,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   returned: "bg-danger-light text-danger",
   lowstock: "bg-orange-100 text-orange-700",
   outofstock: "bg-danger-light text-danger",
+  other: "bg-gray-100 text-gray-700",
 };
 
 const variantLabels: Record<BadgeVariant, string> = {
@@ -30,6 +31,7 @@ const variantLabels: Record<BadgeVariant, string> = {
   returned: "مرتجع",
   lowstock: "كمية منخفضة",
   outofstock: "نفذ",
+  other: "أخرى",
 };
 
 export function Badge({ variant, children, className }: BadgeProps) {
