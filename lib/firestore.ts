@@ -21,8 +21,15 @@ export async function addExpense(
   data: Omit<Expense, "id" | "date">
 ): Promise<string> {
   const expensesRef = collection(db, "expenses");
+  
+  // Create a clean data object without undefined values
+  const cleanData = { ...data };
+  if (cleanData.note === undefined) {
+    delete cleanData.note;
+  }
+
   const docRef = await addDoc(expensesRef, {
-    ...data,
+    ...cleanData,
     date: serverTimestamp(),
   });
   return docRef.id;
